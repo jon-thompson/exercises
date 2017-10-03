@@ -52,6 +52,18 @@ describe('async', function() {
         });
       }, 100)
     });
+
+    it('takes an arbitrary number of thunks', (done) => {
+      const one = cb => setTimeout(cb.bind(null, null, 'one'), 10);
+      const two = (cb, data) => setTimeout(cb.bind(null, null, data + ' two'), 10);
+      const three = (cb, data) => setTimeout(cb.bind(null, null, data + ' three'), 10);
+      const four = (cb, data) => setTimeout(cb.bind(null, null, data + ' four'), 10);
+
+      async.sequence([one, two, three, four])(function(err, data) {
+        assert.equal(data, 'one two three four');
+        done();
+      });
+    });
   });
 
   describe('has a parallel method that', function() {
