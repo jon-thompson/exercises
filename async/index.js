@@ -33,4 +33,23 @@ module.exports = {
       thunks.forEach(processThunk);
     };
   },
+
+  race(thunks) {
+    return function (finalCallback) {
+      let completed = false;
+
+      function processThunk(thunk) {
+        thunk((error, data) => {
+          if (completed) {
+            return;
+          }
+
+          completed = true;
+          finalCallback(error, data);
+        });
+      }
+
+      thunks.forEach(processThunk);
+    };
+  },
 };
